@@ -1,14 +1,21 @@
+'use client';
+
+import { Libre_Caslon_Text } from 'next/font/google';
 import './globals.css';
 
+const libreCaslonText = Libre_Caslon_Text({
+  subsets: ['latin'],
+  weights: ['400', '700'],
+});
+
 export const metadata = {
-  title: 'Your App Title',
-  description: 'Your App Description',
+  title: 'Radio Indica',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={libreCaslonText.className}>{children}</body>
     </html>
   );
 }
