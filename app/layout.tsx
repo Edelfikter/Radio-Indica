@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
-import { Libre_Caslon_Text } from 'next/font/google';
+import { mikadan } from './fonts';
 import './globals.css';
-
-const libreCaslonText = Libre_Caslon_Text({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
 
 export const metadata: Metadata = {
   title: 'Radio Indica',
@@ -19,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={libreCaslonText.className}>{children}</body>
+      <body className={mikadan.className}>{children}</body>
     </html>
   );
 }
