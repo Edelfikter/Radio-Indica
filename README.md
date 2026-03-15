@@ -111,9 +111,45 @@ VERCEL_KV_TOKEN=your_upstash_token
 3. Configure environment variables in Vercel settings.
 4. Deploy your application.
 
+## Typography
+
+The app uses **Mikadan** as its global default font, loaded from a local WOFF2 file at the
+repository root (`Mikadan-Regular.woff2`) via [`next/font/local`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts#local-fonts).
+
+### How Mikadan is loaded
+
+`app/fonts.ts` creates and exports the font object:
+
+```ts
+import localFont from 'next/font/local';
+
+export const mikadan = localFont({
+  src: '../Mikadan-Regular.woff2',
+  display: 'swap',
+});
+```
+
+`app/layout.tsx` then applies it to `<body>` so every page inherits it automatically:
+
+```tsx
+import { mikadan } from './fonts';
+// …
+<body className={mikadan.className}>{children}</body>
+```
+
+### How to change the default font
+
+1. **Local font** – place your `.woff2` file in the repo root (or another path), update the
+   `src` in `app/fonts.ts` to point to it, and rename the export if you like.
+2. **Google font** – replace the `localFont` call in `app/fonts.ts` with the appropriate
+   `next/font/google` import (e.g. `import { Inter } from 'next/font/google'`) and update
+   `app/layout.tsx` to import the new export.
+
 ## Project Structure
 
 - `app/` - App Router pages and root layout (`layout.tsx`, `page.tsx`, `globals.css`)
+- `app/fonts.ts` - Local font definition (Mikadan)
+- `Mikadan-Regular.woff2` - Mikadan font file
 - `tailwind.config.ts` - Tailwind CSS configuration
 - `next.config.js` - Next.js configuration (no `experimental.appDir` — App Router is stable since Next.js 13.4; the flag is unrecognised in Next.js 15)
 - `tsconfig.json` - TypeScript configuration
