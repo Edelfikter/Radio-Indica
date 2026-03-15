@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Libre_Caslon_Text } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 
-const libreCaslonText = Libre_Caslon_Text({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+const mikadan = localFont({
+  src: '../public/fonts/Mikadan-Regular.woff2',
+  variable: '--font-mikadan',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={libreCaslonText.className}>{children}</body>
+      <body className={`${mikadan.variable} font-mikadan`}>{children}</body>
     </html>
   );
 }
