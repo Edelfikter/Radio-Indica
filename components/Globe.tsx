@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useMemo, useState, useCallback } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useRef, useMemo, useCallback } from 'react';
+import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { OrbitControls, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Station } from '@/lib/types';
@@ -77,8 +77,7 @@ function GlobeMesh({ stations, selectedStation, onSelectStation, onAddStation }:
   const lastClick = useRef<number>(0);
 
   const handleClick = useCallback(
-    (e: THREE.Event) => {
-      // @ts-expect-error - three fiber event has point
+    (e: ThreeEvent<MouseEvent>) => {
       const point: THREE.Vector3 = e.point;
       if (!point) return;
 
