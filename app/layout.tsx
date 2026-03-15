@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
-import { Libre_Caslon_Text } from 'next/font/google';
 import './globals.css';
-
-const libreCaslonText = Libre_Caslon_Text({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-});
+import { StationProvider } from '@/context/StationContext';
 
 export const metadata: Metadata = {
   title: 'Radio Indica',
@@ -19,7 +14,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={libreCaslonText.className}>{children}</body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <StationProvider>{children}</StationProvider>
+      </body>
     </html>
   );
 }

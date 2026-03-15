@@ -22,103 +22,70 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Updating a local clone that has conflicting local changes
+---
 
-If you have local edits that conflict with recent upstream changes (e.g. you modified
-`next.config.js`, `package.json`, or files inside `app/` before the fixes were merged),
-follow these steps to merge cleanly:
+## Features
 
-```bash
-# See what you have changed locally
-git status
-git diff
+### Phase 1 — Landing page
+- Solid deep-blue background (`#1a2ab8`).
+- Large centered **Radio Indica** title in Libre Caslon Text (loaded from Google Fonts at runtime; graceful serif fallback during build).
+- Large circle placeholder (links to the globe experience) placed left-of-center below the title.
+- Descriptive copy block to the right of the circle.
+- Responsive: stacks vertically on mobile, side-by-side on md+.
 
-# Option A – discard your local changes and pull the latest (destructive)
-git checkout -- .           # discard all unstaged changes
-git pull origin main        # pull the latest fixes
+### Phase 2 — Interactive globe (`/experience`)
+- **Three.js + React Three Fiber** WebGL globe, SSR-excluded via `next/dynamic`.
+- Auto-rotates with configurable speed.
+- **Click** a blip to select a station; **double-click** the globe surface to add a new station at that lat/lng.
+- OrbitControls for pan/rotate (zoom disabled by default).
 
-# Option B – stash your local changes, pull, then re-apply (safe)
-git stash                   # temporarily shelve your changes
-git pull origin main        # pull the latest fixes
-git stash pop               # re-apply your changes on top
-# Resolve any remaining merge conflicts shown by git, then:
-# git add <conflicting-file> && git stash drop
+### Phase 3 — Stations & editing UI
+- Station model: `id · name · lat · lng · url · description · createdBy · createdAt`.
+- React context store (`context/StationContext.tsx`) — add, update, delete.
+- Sidebar station list with visual selection state.
+- Station editor modal — create or edit stations, delete with confirmation.
+- Station detail panel (bottom-right) with YouTube embed.
 
-# Option C – merge explicitly (for complex conflicts)
-git fetch origin
-git merge origin/main       # merge main into your current branch
-# Edit conflicted files, then:
-# git add <conflicting-file> && git commit
+### Phase 4 — YouTube integration
+- `YouTubePlayer` component extracts the video ID from any `youtube.com` or `youtu.be` URL and renders a responsive `<iframe>` embed.
+- No server-side YouTube Data API calls; the embed works without an API key.
+- To use the YouTube Data API (search, metadata) in the future, add your key to `.env.local`:
+
+```env
+NEXT_PUBLIC_YOUTUBE_API_KEY=your_key_here
 ```
 
-**Common conflict: `next.config.js`**
-
-If git shows a conflict in `next.config.js`, accept the upstream version (it removes the
-invalid `experimental.appDir` key that Next.js 15 no longer supports):
-
-```js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-};
-
-module.exports = nextConfig;
-```
-
-**Common conflict: `package.json` / `tsconfig.json`**
-
-If these files show `\n` escape sequences instead of real newlines, replace the file with
-the version from `origin/main`:
-
-```bash
-git checkout origin/main -- package.json tsconfig.json
-```
-
-After resolving all conflicts, reinstall dependencies and verify the dev server starts
-without warnings:
-
-```bash
-npm install
-npm run dev
-```
-
-You should see output like:
-
-```
-▲ Next.js 15.x.x
-- Local: http://localhost:3000
-✓ Starting...
-✓ Ready
-```
-
-with **no** warning about `Unrecognized key(s) in object: 'appDir' at "experimental"`.
-
-## Setup Instructions
-
-### Environment Variables (optional — only needed for database features)
-
-Create a `.env` file in the root of your project and add the following variables:
-
-```plaintext
-DATABASE_URL=your_postgres_connection_string
-VERCEL_KV_URL=your_upstash_url
-VERCEL_KV_TOKEN=your_upstash_token
-```
-
-### Deployment Steps
-1. Push your code to GitHub.
-2. Connect your GitHub repository to Vercel.
-3. Configure environment variables in Vercel settings.
-4. Deploy your application.
+---
 
 ## Project Structure
 
-- `app/` - App Router pages and root layout (`layout.tsx`, `page.tsx`, `globals.css`)
-- `tailwind.config.ts` - Tailwind CSS configuration
-- `next.config.js` - Next.js configuration (no `experimental.appDir` — App Router is stable since Next.js 13.4; the flag is unrecognised in Next.js 15)
-- `tsconfig.json` - TypeScript configuration
+```
+app/
+  layout.tsx          Root layout — Google Fonts link, StationProvider
+  globals.css         Tailwind directives + CSS custom properties
+  page.tsx            Landing page (Phase 1)
+  experience/
+    page.tsx          Globe experience (Phase 2-4)
+components/
+  Globe.tsx           Three.js WebGL globe (client-only)
+  StationEditor.tsx   Create/edit/delete station modal
+  StationList.tsx     Sidebar station list
+  StationPanel.tsx    Selected station detail + YouTube player
+  YouTubePlayer.tsx   Responsive YouTube iframe embed
+context/
+  StationContext.tsx  React context + state for stations
+lib/
+  types.ts            Station TypeScript interface
+tailwind.config.ts    Tailwind content paths
+next.config.js        Minimal Next.js config (reactStrictMode)
+tsconfig.json         TypeScript config
+```
 
-## Features
-- Globe visualization focused on India with drag-to-rotate functionality.
-- Station creation and management through a modal interface.
-- Broadcasting from any location pinned on the globe.
+---
+
+## Deployment
+
+1. Push to GitHub.
+2. Connect the repo to [Vercel](https://vercel.com).
+3. Add any environment variables in the Vercel dashboard.
+4. Deploy — `npm run build` succeeds without internet access to Google Fonts (fonts load at runtime in the user's browser).
