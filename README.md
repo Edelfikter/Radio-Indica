@@ -114,9 +114,46 @@ VERCEL_KV_TOKEN=your_upstash_token
 ## Project Structure
 
 - `app/` - App Router pages and root layout (`layout.tsx`, `page.tsx`, `globals.css`)
+- `public/fonts/` - Local font files (`Mikadan-Regular.woff2`)
 - `tailwind.config.ts` - Tailwind CSS configuration
 - `next.config.js` - Next.js configuration (no `experimental.appDir` — App Router is stable since Next.js 13.4; the flag is unrecognised in Next.js 15)
 - `tsconfig.json` - TypeScript configuration
+
+## Fonts
+
+This project uses the **Mikadan** typeface as its primary font. The font file is stored at:
+
+```
+public/fonts/Mikadan-Regular.woff2
+```
+
+It is loaded in `app/layout.tsx` via [`next/font/local`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts#local-fonts):
+
+```tsx
+import localFont from 'next/font/local';
+
+const mikadan = localFont({
+  src: '../public/fonts/Mikadan-Regular.woff2',
+  variable: '--font-mikadan',
+  display: 'swap',
+});
+```
+
+The font is exposed as a Tailwind CSS utility class (`font-mikadan`) via the CSS custom property `--font-mikadan`, which is configured in `tailwind.config.ts`:
+
+```ts
+fontFamily: {
+  mikadan: ['var(--font-mikadan)', 'sans-serif'],
+},
+```
+
+To use the font on any element, apply the Tailwind class:
+
+```html
+<p class="font-mikadan">Radio Indica</p>
+```
+
+
 
 ## Features
 - Globe visualization focused on India with drag-to-rotate functionality.
